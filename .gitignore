@@ -43,8 +43,7 @@ Generated_Code/
 !.nuget/
 !NuGet.exe
 !packages.config
-solution/packages/*/
-solution/**/packages/**/
+**/packages/**/
 !packages/repositories.config
 *.deleteme
 
