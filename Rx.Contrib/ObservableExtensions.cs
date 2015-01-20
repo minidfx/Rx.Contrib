@@ -42,8 +42,8 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable Awaitable<TSource>(this IObservable<TSource> source,
-                                                          Func<IObservable<TSource>, IDisposable> subscribeAction)
+        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                      Func<IObservable<TSource>, IDisposable> subscribeAction)
         {
             return new AwaitableSubscription<TSource>(source, subscribeAction);
         }
@@ -64,8 +64,8 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable Awaitable<TSource>(this IObservable<TSource> source,
-                                                          Action<IObservable<TSource>> subscribeAction)
+        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                      Action<IObservable<TSource>> subscribeAction)
         {
             return new AwaitableSubscription<TSource>(source, subscribeAction);
         }
