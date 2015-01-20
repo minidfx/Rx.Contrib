@@ -1,2 +1,2 @@
 language: csharp
-solution: Rx.Contrib\Rx.Contrib.sln
+solution: Rx.Contrib/Rx.Contrib.sln
