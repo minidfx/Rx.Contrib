@@ -4,7 +4,7 @@
     using System.Reactive.Linq;
     using System.Threading.Tasks;
 
-    internal class AwaitableObservable<TSource> : IAsyncDisposable
+    internal class AwaitableSubscription<TSource> : IAsyncDisposable
     {
         #region Fields
 
@@ -17,7 +17,7 @@
         #region Constructors and Destructors
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="AwaitableObservable{T}" /> class.
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
         /// </summary>
         /// <param name="source">
         ///   Source sequence to propagate elements for.
@@ -25,15 +25,15 @@
         /// <param name="subscribeAction">
         ///   The function which will be executed to retrieve the subscription on the <paramref name="source" />.
         /// </param>
-        public AwaitableObservable(IObservable<TSource> source,
-                                   Func<IObservable<TSource>, IDisposable> subscribeAction)
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Func<IObservable<TSource>, IDisposable> subscribeAction)
             : this()
         {
             this.subscription = subscribeAction(source.Finally(() => this.tcs.SetResult(default(TSource))));
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="AwaitableObservable{T}" /> class.
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
         /// </summary>
         /// <param name="source">
         ///   Source sequence to propagate elements for.
@@ -41,14 +41,14 @@
         /// <param name="subscribeAction">
         ///   The action which will be executed to execute the subscription on the <paramref name="source" />.
         /// </param>
-        public AwaitableObservable(IObservable<TSource> source,
-                                   Action<IObservable<TSource>> subscribeAction)
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<IObservable<TSource>> subscribeAction)
             : this()
         {
             subscribeAction(source.Finally(() => this.tcs.SetResult(default(TSource))));
         }
 
-        private AwaitableObservable()
+        private AwaitableSubscription()
         {
             this.tcs = new TaskCompletionSource<TSource>();
         }

@@ -45,7 +45,7 @@
         public static IAsyncDisposable Awaitable<TSource>(this IObservable<TSource> source,
                                                           Func<IObservable<TSource>, IDisposable> subscribeAction)
         {
-            return new AwaitableObservable<TSource>(source, subscribeAction);
+            return new AwaitableSubscription<TSource>(source, subscribeAction);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@
         public static IAsyncDisposable Awaitable<TSource>(this IObservable<TSource> source,
                                                           Action<IObservable<TSource>> subscribeAction)
         {
-            return new AwaitableObservable<TSource>(source, subscribeAction);
+            return new AwaitableSubscription<TSource>(source, subscribeAction);
         }
 
         #endregion
