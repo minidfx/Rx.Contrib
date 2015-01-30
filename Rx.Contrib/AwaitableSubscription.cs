@@ -2,8 +2,17 @@
 {
     using System;
     using System.Reactive.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
+    /// <summary>
+    ///     Provides a set of static methods for subscribing delegates to observable and add the possbility
+    ///     for waiting the end of the subcription, occured when the observable is completed or an error is produced.
+    /// </summary>
+    /// <remarks>
+    ///     Don't forget the Rx grammer for asynchronous sequences of data : OnNext* (OnCompleted|OnError)?
+    /// </remarks>
+    /// <typeparam name="TSource"></typeparam>
     internal class AwaitableSubscription<TSource> : IAsyncDisposable
     {
         #region Fields
@@ -22,14 +31,11 @@
         /// <param name="source">
         ///   Source sequence to propagate elements for.
         /// </param>
-        /// <param name="subscribeAction">
-        ///   The function which will be executed to retrieve the subscription on the <paramref name="source" />.
-        /// </param>
-        public AwaitableSubscription(IObservable<TSource> source,
-                                     Func<IObservable<TSource>, IDisposable> subscribeAction)
+        public AwaitableSubscription(IObservable<TSource> source)
             : this()
         {
-            this.subscription = subscribeAction(source.Finally(() => this.tcs.SetResult(default(TSource))));
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = source.Subscribe();
         }
 
         /// <summary>
@@ -38,14 +44,220 @@
         /// <param name="source">
         ///   Source sequence to propagate elements for.
         /// </param>
-        /// <param name="subscribeAction">
-        ///   The action which will be executed to execute the subscription on the <paramref name="source" />.
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
         /// </param>
         public AwaitableSubscription(IObservable<TSource> source,
-                                     Action<IObservable<TSource>> subscribeAction)
+                                     Action<TSource> onNext)
             : this()
         {
-            subscribeAction(source.Finally(() => this.tcs.SetResult(default(TSource))));
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = source.Subscribe(onNext);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onError">
+        ///     Action to invoke upon exceptional termination of the observable sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<TSource> onNext,
+                                     Action<Exception> onError)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = source.Subscribe(onNext, onError);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onCompleted">
+        ///     Action to invoke upon graceful termination of the observable sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<TSource> onNext,
+                                     Action onCompleted)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = source.Subscribe(onNext, onCompleted);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onError">
+        ///     Action to invoke upon exceptional termination of the observable sequence.
+        /// </param>
+        /// <param name="onCompleted">
+        ///     Action to invoke upon graceful termination of the observable sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<TSource> onNext,
+                                     Action<Exception> onError,
+                                     Action onCompleted)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = source.Subscribe(onNext, onError, onCompleted);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="observer">
+        ///     Observer to subscribe to the sequence.
+        /// </param>
+        /// <param name="token">
+        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     IObserver<TSource> observer,
+                                     CancellationToken token)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            source.Subscribe(observer, token);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="token">
+        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     CancellationToken token)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            source.Subscribe(token);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="token">
+        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<TSource> onNext,
+                                     CancellationToken token)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            source.Subscribe(onNext, token);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onError">
+        ///     Action to invoke upon exceptional termination of the observable sequence.
+        /// </param>
+        /// <param name="token">
+        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<TSource> onNext,
+                                     Action<Exception> onError,
+                                     CancellationToken token)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            source.Subscribe(onNext, onError, token);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onCompleted">
+        ///     Action to invoke upon graceful termination of the observable sequence.
+        /// </param>
+        /// <param name="token">
+        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<TSource> onNext,
+                                     Action onCompleted,
+                                     CancellationToken token)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            source.Subscribe(onNext, onCompleted, token);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
+        /// </summary>
+        /// <param name="source">
+        ///   Source sequence to propagate elements for.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onError">
+        ///     Action to invoke upon exceptional termination of the observable sequence.
+        /// </param>
+        /// <param name="onCompleted">
+        ///     Action to invoke upon graceful termination of the observable sequence.
+        /// </param>
+        /// <param name="token">
+        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
+        /// </param>
+        public AwaitableSubscription(IObservable<TSource> source,
+                                     Action<TSource> onNext,
+                                     Action<Exception> onError,
+                                     Action onCompleted,
+                                     CancellationToken token)
+            : this()
+        {
+            source.Finally(() => this.tcs.SetResult(default(TSource)));
+            source.Subscribe(onNext, onError, onCompleted, token);
         }
 
         private AwaitableSubscription()
