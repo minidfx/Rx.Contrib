@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>Rx.Contrib</id>
+        <version>0.3</version>
+        <authors>MiniDfx</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Contains some extension methods for Rx.</description>
+        <tags>rx, async, observable</tags>
+        <dependencies>
+            <group targetFramework=".NETFramework4.5.1">
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="Rx.Contrib\bin\Release\Rx.Contrib.dll" target="lib\net451\Rx.Contrib.dll" />
+        <file src="Rx.Contrib\bin\Release\Rx.Contrib.pdb" target="lib\net451\Rx.Contrib.pdb" />
+        <file src="Rx.Contrib\bin\Release\Rx.Contrib.XML" target="lib\net451\Rx.Contrib.XML" />
+    </files>
+</package>
