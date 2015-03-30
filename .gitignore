@@ -40,12 +40,8 @@ ClientBin/
 Generated_Code/
 *.sln.ide/
 
-!.nuget/
-!NuGet.exe
-!packages.config
-**/packages/**/
-!packages/repositories.config
-*.deleteme
+**/.nuget/
+**/packages
 
 *.suo
 *.svclog
