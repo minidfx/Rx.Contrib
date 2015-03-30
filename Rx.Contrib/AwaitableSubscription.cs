@@ -270,6 +270,17 @@
         #region Public Methods and Operators
 
         /// <summary>
+        ///     Waits for the subscription is completed or an error occured.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="T:System.Threading.Tasks.Task" /> representing the outcome of the operation.
+        /// </returns>
+        public Task Await()
+        {
+            return this.tcs.Task;
+        }
+
+        /// <summary>
         ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources
         ///   asynchronously.
         /// </summary>
