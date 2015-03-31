@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>Rx.Contrib</id>
-        <version>0.4</version>
+        <version>0.4.1</version>
         <authors>MiniDfx</authors>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Contains some extension methods for Rx.</description>
