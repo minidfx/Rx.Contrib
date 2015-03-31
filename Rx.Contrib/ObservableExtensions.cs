@@ -41,7 +41,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source)
         {
             return new AwaitableSubscription<TSource>(source);
         }
@@ -61,8 +61,8 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext)
         {
             return new AwaitableSubscription<TSource>(source, onNext);
         }
@@ -85,9 +85,9 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext,
-                                                                      Action<Exception> onError)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext,
+                                                                            Action<Exception> onError)
         {
             return new AwaitableSubscription<TSource>(source, onNext, onError);
         }
@@ -110,9 +110,9 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext,
-                                                                      Action onCompleted)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext,
+                                                                            Action onCompleted)
         {
             return new AwaitableSubscription<TSource>(source, onNext, onCompleted);
         }
@@ -138,10 +138,10 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext,
-                                                                      Action<Exception> onError,
-                                                                      Action onCompleted)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext,
+                                                                            Action<Exception> onError,
+                                                                            Action onCompleted)
         {
             return new AwaitableSubscription<TSource>(source, onNext, onError, onCompleted);
         }
@@ -164,9 +164,9 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      IObserver<TSource> observer,
-                                                                      CancellationToken token)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            IObserver<TSource> observer,
+                                                                            CancellationToken token)
         {
             return new AwaitableSubscription<TSource>(source, observer, token);
         }
@@ -186,8 +186,8 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      CancellationToken token)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            CancellationToken token)
         {
             return new AwaitableSubscription<TSource>(source, token);
         }
@@ -210,9 +210,9 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext,
-                                                                      CancellationToken token)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext,
+                                                                            CancellationToken token)
         {
             return new AwaitableSubscription<TSource>(source, token);
         }
@@ -238,10 +238,10 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext,
-                                                                      Action<Exception> onError,
-                                                                      CancellationToken token)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext,
+                                                                            Action<Exception> onError,
+                                                                            CancellationToken token)
         {
             return new AwaitableSubscription<TSource>(source, token);
         }
@@ -267,10 +267,10 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext,
-                                                                      Action onCompleted,
-                                                                      CancellationToken token)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext,
+                                                                            Action onCompleted,
+                                                                            CancellationToken token)
         {
             return new AwaitableSubscription<TSource>(source, token);
         }
@@ -299,11 +299,11 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAsyncDisposable AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                      Action<TSource> onNext,
-                                                                      Action<Exception> onError,
-                                                                      Action onCompleted,
-                                                                      CancellationToken token)
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
+                                                                            Action<TSource> onNext,
+                                                                            Action<Exception> onError,
+                                                                            Action onCompleted,
+                                                                            CancellationToken token)
         {
             return new AwaitableSubscription<TSource>(source, token);
         }

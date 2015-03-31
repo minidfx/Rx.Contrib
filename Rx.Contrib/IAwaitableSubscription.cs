@@ -5,7 +5,7 @@ namespace Rx.Contrib
     /// <summary>
     ///     Define the contract of a subscription that you can wait for.
     /// </summary>
-    internal interface IAwaitableSubscription : IAsyncDisposable
+    public interface IAwaitableSubscription : IAsyncDisposable
     {
         #region Public Methods and Operators
 
