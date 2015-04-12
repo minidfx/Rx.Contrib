@@ -34,8 +34,8 @@
         public AwaitableSubscription(IObservable<TSource> source)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            this.subscription = source.Subscribe();
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = newSource.Subscribe();
         }
 
         /// <summary>
@@ -51,8 +51,8 @@
                                      Action<TSource> onNext)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            this.subscription = source.Subscribe(onNext);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = newSource.Subscribe(onNext);
         }
 
         /// <summary>
@@ -72,8 +72,8 @@
                                      Action<Exception> onError)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            this.subscription = source.Subscribe(onNext, onError);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = newSource.Subscribe(onNext, onError);
         }
 
         /// <summary>
@@ -93,8 +93,8 @@
                                      Action onCompleted)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            this.subscription = source.Subscribe(onNext, onCompleted);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = newSource.Subscribe(onNext, onCompleted);
         }
 
         /// <summary>
@@ -118,8 +118,8 @@
                                      Action onCompleted)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            this.subscription = source.Subscribe(onNext, onError, onCompleted);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            this.subscription = newSource.Subscribe(onNext, onError, onCompleted);
         }
 
         /// <summary>
@@ -139,8 +139,8 @@
                                      CancellationToken token)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            source.Subscribe(observer, token);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            newSource.Subscribe(observer, token);
         }
 
         /// <summary>
@@ -156,8 +156,8 @@
                                      CancellationToken token)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            source.Subscribe(token);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            newSource.Subscribe(token);
         }
 
         /// <summary>
@@ -177,8 +177,8 @@
                                      CancellationToken token)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            source.Subscribe(onNext, token);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            newSource.Subscribe(onNext, token);
         }
 
         /// <summary>
@@ -202,8 +202,8 @@
                                      CancellationToken token)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            source.Subscribe(onNext, onError, token);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            newSource.Subscribe(onNext, onError, token);
         }
 
         /// <summary>
@@ -227,8 +227,8 @@
                                      CancellationToken token)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            source.Subscribe(onNext, onCompleted, token);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            newSource.Subscribe(onNext, onCompleted, token);
         }
 
         /// <summary>
@@ -256,8 +256,8 @@
                                      CancellationToken token)
             : this()
         {
-            source.Finally(() => this.tcs.SetResult(default(TSource)));
-            source.Subscribe(onNext, onError, onCompleted, token);
+            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
+            newSource.Subscribe(onNext, onError, onCompleted, token);
         }
 
         private AwaitableSubscription()
