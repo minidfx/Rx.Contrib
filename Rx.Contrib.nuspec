@@ -2,10 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>Rx.Contrib</id>
-        <version>0.4.1</version>
-        <authors>MiniDfx</authors>
+        <version>0.4.2</version>
+        <title>Rx.Contrib</title>
+        <authors>Burgy Benjamin</authors>
+        <owners>Burgy Benjamin</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Contains some extension methods for Rx.</description>
+        <language>en-US</language>
         <tags>rx, async, observable</tags>
         <dependencies>
             <group targetFramework=".NETFramework4.5.1">
