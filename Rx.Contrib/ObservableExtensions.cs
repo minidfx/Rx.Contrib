@@ -214,7 +214,7 @@
                                                                             Action<TSource> onNext,
                                                                             CancellationToken token)
         {
-            return new AwaitableSubscription<TSource>(source, token);
+            return new AwaitableSubscription<TSource>(source, onNext, token);
         }
 
         /// <summary>
@@ -243,7 +243,7 @@
                                                                             Action<Exception> onError,
                                                                             CancellationToken token)
         {
-            return new AwaitableSubscription<TSource>(source, token);
+            return new AwaitableSubscription<TSource>(source, onNext, onError, token);
         }
 
         /// <summary>
@@ -272,7 +272,7 @@
                                                                             Action onCompleted,
                                                                             CancellationToken token)
         {
-            return new AwaitableSubscription<TSource>(source, token);
+            return new AwaitableSubscription<TSource>(source, onNext, onCompleted, token);
         }
 
         /// <summary>
@@ -305,7 +305,7 @@
                                                                             Action onCompleted,
                                                                             CancellationToken token)
         {
-            return new AwaitableSubscription<TSource>(source, token);
+            return new AwaitableSubscription<TSource>(source, onNext, onError, onCompleted, token);
         }
 
         #endregion
