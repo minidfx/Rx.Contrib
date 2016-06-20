@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Rx.Contrib")]
-[assembly: AssemblyDescription("Extension methods for Rx.")]
+[assembly: AssemblyDescription("Contributions for Reactive Extensions.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("minidfx")]
 [assembly: AssemblyProduct("Rx.Contrib")]
-[assembly: AssemblyCopyright("Copyright © 2015")]
+[assembly: AssemblyCopyright("Copyright © 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,4 +35,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.4.4.*")]
+[assembly: AssemblyVersion("0.4.5.*")]
