@@ -256,33 +256,15 @@ namespace Rx.Contrib
         }
 
         /// <summary>
-        ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
-        ///   <paramref name="source" /> is disposed.
         /// </summary>
         /// <typeparam name="TSource">
-        ///   The type of the elements in the source sequence.
         /// </typeparam>
         /// <param name="source">
-        ///   Source sequence to propagate elements for.
         /// </param>
-        /// <param name="onNext">
-        ///   Action to invoke for each element in the observable sequence.
-        /// </param>
-        /// <param name="onCompleted">
-        ///   Action to invoke upon graceful termination of the observable sequence.
-        /// </param>
-        /// <param name="token">
-        ///   CancellationToken that can be signaled to unsubscribe from the source sequence.
         /// </param>
         /// <returns>
-        ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
-        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
-            Action<TSource> onNext,
-            Action onCompleted,
-            CancellationToken token)
         {
-            return new AwaitableSubscription<TSource>(source, onNext, onCompleted, token);
         }
 
         /// <summary>

@@ -169,27 +169,6 @@
         /// <param name="onNext">
         ///     Action to invoke for each element in the observable sequence.
         /// </param>
-        /// <param name="token">
-        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
-        /// </param>
-        public AwaitableSubscription(IObservable<TSource> source,
-                                     Action<TSource> onNext,
-                                     CancellationToken token)
-            : this()
-        {
-            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
-            newSource.Subscribe(onNext, token);
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
-        /// </summary>
-        /// <param name="source">
-        ///   Source sequence to propagate elements for.
-        /// </param>
-        /// <param name="onNext">
-        ///     Action to invoke for each element in the observable sequence.
-        /// </param>
         /// <param name="onError">
         ///     Action to invoke upon exceptional termination of the observable sequence.
         /// </param>
@@ -204,31 +183,6 @@
         {
             var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
             newSource.Subscribe(onNext, onError, token);
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="AwaitableSubscription{TSource}" /> class.
-        /// </summary>
-        /// <param name="source">
-        ///   Source sequence to propagate elements for.
-        /// </param>
-        /// <param name="onNext">
-        ///     Action to invoke for each element in the observable sequence.
-        /// </param>
-        /// <param name="onCompleted">
-        ///     Action to invoke upon graceful termination of the observable sequence.
-        /// </param>
-        /// <param name="token">
-        ///     CancellationToken that can be signaled to unsubscribe from the source sequence.
-        /// </param>
-        public AwaitableSubscription(IObservable<TSource> source,
-                                     Action<TSource> onNext,
-                                     Action onCompleted,
-                                     CancellationToken token)
-            : this()
-        {
-            var newSource = source.Finally(() => this.tcs.SetResult(default(TSource)));
-            newSource.Subscribe(onNext, onCompleted, token);
         }
 
         /// <summary>
