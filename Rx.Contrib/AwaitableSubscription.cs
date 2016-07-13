@@ -12,7 +12,9 @@
     /// <remarks>
     ///     Don't forget the Rx grammer for asynchronous sequences of data : OnNext* (OnCompleted|OnError)?
     /// </remarks>
-    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TSource">
+    ///     The type of the elements in the source sequence.
+    /// </typeparam>
     internal class AwaitableSubscription<TSource> : IAwaitableSubscription
     {
         #region Fields

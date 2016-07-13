@@ -80,6 +80,7 @@
       <SubType>Code</SubType>
     </Compile>
     <AppDesigner Include="Properties\" />
+    <Compile Include="ValueHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.snk" />
