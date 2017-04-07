@@ -370,6 +370,26 @@
         }
 
         /// <summary>
+        ///     Repeats the source observable sequence until it successfully terminates when the <typeparamref name="TException"/> occurred.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <typeparam name="TException">
+        ///     The exception type which will be caught.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Observable sequence to repeat until it successfully terminates.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully when the <typeparamref name="TException"/> occurred.
+        /// </returns>
+        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source) where TException : Exception
+        {
+            return source.Catch<TSource, TException>(e => source.Retry<TSource, TException>());
+        }
+
+        /// <summary>
         ///     Projects each element of an observable sequence into a new form, <paramref name="selector"/> is executed in parallel.
         /// </summary>
         /// <typeparam name="TSource">
