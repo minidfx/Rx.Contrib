@@ -7,22 +7,14 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Rx.Contrib")]
 [assembly: AssemblyDescription("Contributions for Reactive Extensions.")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("minidfx")]
 [assembly: AssemblyProduct("Rx.Contrib")]
-[assembly: AssemblyCopyright("Copyright © 2016")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyCopyright("Copyright © 2017")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 
 [assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-
-[assembly: Guid("febbf179-6d5f-4cad-b9d5-2d1b25d44da3")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,4 +27,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.4.5.*")]
+[assembly: AssemblyVersion("1.0.0.*")]
