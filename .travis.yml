@@ -2,4 +2,7 @@ language: csharp
 env:
  global:
   - EnableNuGetPackageRestore=true 
+before_install:
+  - nuget
+  - nuget restore Rx.Contrib/project.json -SolutionDirectory . -Verbosity detailed
 solution: Rx.Contrib.sln
