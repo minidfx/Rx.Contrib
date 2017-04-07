@@ -1,4 +1,4 @@
 language: csharp
-solution: Rx.Contrib.sln
+solution: Rx.Contrib/Rx.Contrib.sln
 install:
-  - nuget restore
+  - nuget restore Rx.Contrib.sln -Verbosity detailed
