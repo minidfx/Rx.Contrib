@@ -355,68 +355,6 @@
         }
 
         /// <summary>
-        ///     Ensure that every message yielded will be executed on the <see cref="ExecutionContext"/> captured when subscribing. 
-        ///     Use it only when the source is an hot <see cref="IObservable{T}"/>. Usually we only have hot observables with Publish().Refcount()
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The generic type of the <paramref name="source"/>.
-        /// </typeparam>
-        /// <param name="source">
-        ///     The original one!
-        /// </param>
-        /// <remarks>
-        ///     We introduced this method because we had a bug where elevated rights wouldn't be available when subscribing to a published observable where the first subscriber wasn't on the same execution context.
-        ///     The solution was found at the address: http://www.palladiumconsulting.com/2014/07/reactive-extensions-and-executioncontext/ 
-        /// </remarks>
-        /// <returns>
-        ///     An <see cref="IObservable{T}"/> sequence which synchronize the message yielded by the <paramref name="source"/> on the <see cref="ExecutionContext"/> captured when subscribing.
-        /// </returns>
-        public static IObservable<T> FlowObserverExecutionContext<T>(this IObservable<T> source)
-        {
-            return Observable.Create<T>(observer =>
-                                            {
-                                                // Capture the observer's execution context
-                                                var context = ExecutionContext.Capture();
-                                                if (context == null)
-                                                {
-                                                    // Context flow is suppressed.
-                                                    return source.Subscribe(observer);
-                                                }
-
-                                                try
-                                                {
-                                                    var observerContext = context;
-                                                    var subscription = new SingleAssignmentDisposable();
-                                                    var disposables = new CompositeDisposable(subscription, observerContext);
-
-                                                    subscription.Disposable = source.Subscribe(value =>
-                                                                                                   {
-                                                                                                       // Contexts are only usable once. So create a copy for each onNext notification
-                                                                                                       using (var c = observerContext.CreateCopy())
-                                                                                                       {
-                                                                                                           // Run the notification with this context
-                                                                                                           ExecutionContext.Run(c, _ => observer.OnNext(value), null);
-                                                                                                       }
-                                                                                                   },
-                                                                                               error => ExecutionContext.Run(observerContext, _ => observer.OnError(error), null),
-                                                                                               () => ExecutionContext.Run(observerContext, o => ((IObserver<T>)o).OnCompleted(), observer));
-
-                                                    // prevent it from being disposed in finally block below
-                                                    context = null;
-
-                                                    return disposables;
-                                                }
-                                                finally
-                                                {
-                                                    if (context != null)
-                                                    {
-                                                        context.Dispose();
-                                                    }
-                                                }
-                                            });
-        }
-
-        /// <summary>
         ///   Starts an observable with an <paramref name="interval" /> yielding the first message at the beginning.
         /// </summary>
         /// <param name="interval">
