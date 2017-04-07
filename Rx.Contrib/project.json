@@ -1,11 +1,11 @@
 {
   "supports": {},
   "dependencies": {
-    "System.Reactive.Core": "*",
-    "System.Reactive.Interfaces": "*",
-    "System.Reactive.Linq": "*",
-    "System.Threading": "*",
-    "System.Runtime": "*",
+    "System.Reactive.Core": "3.1.1",
+    "System.Reactive.Interfaces": "3.1.1",
+    "System.Reactive.Linq": "3.1.1",
+    "System.Threading": "4.3.0",
+    "System.Runtime": "4.3.0",
     "NETStandard.Library": "1.6.0",
     "Microsoft.NETCore.Portable.Compatibility": "1.0.1"
   },
