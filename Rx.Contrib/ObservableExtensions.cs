@@ -386,7 +386,12 @@
         /// </returns>
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source) where TException : Exception
         {
-            return source.Catch<TSource, TException>(e => source.Retry<TSource, TException>());
+            var observable = Observable.Empty<TSource>();
+
+            // ReSharper disable once AccessToModifiedClosure
+            observable = source.Catch<TSource, TException>(e => observable);
+
+            return observable;
         }
 
         /// <summary>
