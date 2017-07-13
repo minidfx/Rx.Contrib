@@ -632,11 +632,146 @@
         public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
             this IObservable<TSource> source)
         {
+            return InternalSubscribeWithCancellationSupport(
+                                                            source,
+                                                            (
+                                                                token,
+                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs));
+        }
+
+        /// <summary>
+        ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
+        ///     It sends an cancellation request on disposal and waits for the observable to complete.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to subscribe to.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <returns>
+        ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
+        /// </returns>
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
+            this IObservable<TSource> source,
+            Action<TSource> onNext)
+        {
+            return InternalSubscribeWithCancellationSupport(
+                                                            source,
+                                                            (
+                                                                token,
+                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext));
+        }
+
+        /// <summary>
+        ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
+        ///     It sends an cancellation request on disposal and waits for the observable to complete.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to subscribe to.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onError">
+        ///     Action to invoke upon exceptional termination of the observable sequence.
+        /// </param>
+        /// <returns>
+        ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
+        /// </returns>
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
+            this IObservable<TSource> source,
+            Action<TSource> onNext,
+            Action<Exception> onError)
+        {
+            return InternalSubscribeWithCancellationSupport(
+                                                            source,
+                                                            (
+                                                                token,
+                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError));
+        }
+
+        /// <summary>
+        ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
+        ///     It sends an cancellation request on disposal and waits for the observable to complete.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to subscribe to.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onCompleted">
+        ///     Action to invoke upon graceful termination of the observable sequence.
+        /// </param>
+        /// <returns>
+        ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
+        /// </returns>
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
+            this IObservable<TSource> source,
+            Action<TSource> onNext,
+            Action onCompleted)
+        {
+            return InternalSubscribeWithCancellationSupport(
+                                                            source,
+                                                            (
+                                                                token,
+                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, null, onCompleted));
+        }
+
+        /// <summary>
+        ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
+        ///     It sends an cancellation request on disposal and waits for the observable to complete.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to subscribe to.
+        /// </param>
+        /// <param name="onNext">
+        ///     Action to invoke for each element in the observable sequence.
+        /// </param>
+        /// <param name="onError">
+        ///     Action to invoke upon exceptional termination of the observable sequence.
+        /// </param>
+        /// <param name="onCompleted">
+        ///     Action to invoke upon graceful termination of the observable sequence.
+        /// </param>
+        /// <returns>
+        ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
+        /// </returns>
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
+            this IObservable<TSource> source,
+            Action<TSource> onNext,
+            Action<Exception> onError,
+            Action onCompleted)
+        {
+            return InternalSubscribeWithCancellationSupport(
+                                                            source,
+                                                            (
+                                                                token,
+                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError, onCompleted));
+        }
+
+        private static IAsyncDisposable InternalSubscribeWithCancellationSupport<TSource>(
+            IObservable<TSource> source,
+            Func<CancellationToken, TaskCompletionSource<object>, ObserverWithCancellationSupport<TSource>> observerFactory)
+        {
             var taskCompletionSource = new TaskCompletionSource<object>();
 
             var cancellationTokenSource = new CancellationTokenSource();
 
-            source.Subscribe(new ObserverWithCancellationSupport<TSource>(cancellationTokenSource.Token, taskCompletionSource));
+            source.Subscribe(observerFactory(cancellationTokenSource.Token, taskCompletionSource));
 
             return AsyncDisposable.Create(
                                           () =>
@@ -690,7 +825,7 @@
 
         /// <summary>
         ///     Creates an observable sequence with the possibility to get a subscription where the observable can be notified to stop producing items.
-        ///     Use any of the <see cref="ObservableExtensions.Subscribe{TSource}"/> methods to get an <see cref="IAsyncDisposable"/>.
+        ///     Use any of the <see cref="SubscribeWithCancellationSupport{TSource}(System.IObservable{TSource})"/> methods to get an <see cref="IAsyncDisposable"/>.
         /// </summary>
         /// <typeparam name="TResult">
         ///     The type of items which is returned by the new observable.
