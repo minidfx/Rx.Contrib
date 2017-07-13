@@ -11,14 +11,15 @@
         <language>en-US</language>
         <tags>rx, async, observable, core, standard</tags>
         <dependencies>
-            <group targetFramework="netstandard1.0">
+            <group targetFramework="netstandard1.5">
                 <dependency id="System.Reactive.Core" version="3.1.1" />
                 <dependency id="System.Reactive.Interfaces" version="3.1.1" />
                 <dependency id="System.Reactive.Linq" version="3.1.1" />
-                <dependency id="System.Threading" version="4.3.0" />
+                <dependency id="System.Reflection" version="4.3.0" />
                 <dependency id="System.Runtime" version="4.3.0" />
-                <dependency id="NETStandard.Library" version="1.6.0" />
-                <dependency id="Microsoft.NETCore.Portable.Compatibility" version="1.0.1" />
+            </group>
+			<group targetFramework=".NETFramework4.5.1">
+                <dependency id="System.Reactive.Core" version="3.1.1" />
             </group>
         </dependencies>
     </metadata>

@@ -2,10 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Reactive.Threading.Tasks;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,6 +16,14 @@
     /// </summary>
     public static class ObservableExtensions
     {
+        private static ObserverWithCancellationSupport<T> GetBaseObserver<T>(
+            IObserver<T> observer)
+        {
+            var observerField = observer.GetType().GetTypeInfo().GetField("observer", BindingFlags.Instance | BindingFlags.NonPublic);
+            Debug.Assert(observerField != null, "Apparently the implementation of Rx.NET changed");
+            return (ObserverWithCancellationSupport<T>)observerField.GetValue(observer);
+        }
+
         #region Public Methods and Operators
 
         /// <summary>
@@ -395,6 +405,120 @@
         }
 
         /// <summary>
+        ///     Retries if there is an <typeparamref name="TException"/>.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <typeparam name="TException">
+        ///     The type of exception on which it should retry.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to retry in case of an <typeparamref name="TException"/>.
+        /// </param>
+        /// <param name="where">
+        ///     Filter is applied to catched exceptions.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
+        /// </returns>
+        public static IObservable<TSource> Retry<TSource, TException>(
+            this IObservable<TSource> source,
+            Func<TException, bool> where)
+            where TException : Exception
+        {
+            IObservable<TSource> observable = null;
+
+            // ReSharper disable once AccessToModifiedClosure
+            observable = source.Catch<TSource, TException>(
+                                                           ex =>
+                                                               {
+                                                                   if (where(ex))
+                                                                   {
+                                                                       return observable;
+                                                                   }
+
+                                                                   return Observable.Throw<TSource>(ex);
+                                                               });
+
+            return observable;
+        }
+
+        /// <summary>
+        ///     Retries if there is an <typeparamref name="TException"/>.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <typeparam name="TException">
+        ///     The type of exception on which it should retry.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to retry in case of an <typeparamref name="TException"/>.
+        /// </param>
+        /// <param name="maxRetry">
+        ///     How many times to retry.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
+        /// </returns>
+        public static IObservable<TSource> Retry<TSource, TException>(
+            this IObservable<TSource> source,
+            int maxRetry)
+            where TException : Exception
+        {
+            return Observable.Create<TSource>(
+                                              observer =>
+                                                  {
+                                                      IObservable<TSource> observable = null;
+                                                      var retryCount = maxRetry;
+
+                                                      // ReSharper disable once AccessToModifiedClosure
+                                                      observable = source.Catch<TSource, TException>(
+                                                                                                     ex =>
+                                                                                                         {
+                                                                                                             if (retryCount == 0)
+                                                                                                             {
+                                                                                                                 return Observable.Throw<TSource>(ex);
+                                                                                                             }
+
+                                                                                                             retryCount--;
+                                                                                                             return observable;
+                                                                                                         });
+
+                                                      return observable.Subscribe(observer);
+                                                  });
+        }
+
+        /// <summary>
+        ///     Projects each element of an observable sequence into a new form, new source sequence elements cancel old uncompleted tasks returned by the previous call to <paramref name="selector"/> and filters uncompleted transformations.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the elements in the result sequence, obtained by running the selector function for each element in the source sequence.
+        /// </typeparam>
+        /// <param name="source">
+        ///     A sequence of elements to invoke a transform function on.
+        /// </param>
+        /// <param name="selector">
+        ///     A transform function to apply to each source element.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence whose elements are the result of invoking the transform function on each element of source.
+        /// </returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        ///     <paramref name="source"/> or <paramref name="selector"/> is null.
+        /// </exception>
+        public static IObservable<TResult> SelectAsyncCancelling<TSource, TResult>(
+            this IObservable<TSource> source,
+            Func<CancellationToken, TSource, Task<TResult>> selector)
+        {
+            return source.Select(o => Observable.FromAsync(cancellationToken => selector(cancellationToken, o))).Switch();
+        }
+
+        /// <summary>
         ///     Projects each element of an observable sequence into a new form, <paramref name="selector"/> is executed in parallel.
         /// </summary>
         /// <typeparam name="TSource">
@@ -493,6 +617,36 @@
         }
 
         /// <summary>
+        ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
+        ///     It sends an cancellation request on disposal and waits for the observable to complete.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to subscribe to.
+        /// </param>
+        /// <returns>
+        ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
+        /// </returns>
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
+            this IObservable<TSource> source)
+        {
+            var taskCompletionSource = new TaskCompletionSource<object>();
+
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            source.Subscribe(new ObserverWithCancellationSupport<TSource>(cancellationTokenSource.Token, taskCompletionSource));
+
+            return AsyncDisposable.Create(
+                                          () =>
+                                              {
+                                                  cancellationTokenSource.Cancel();
+                                                  return taskCompletionSource.Task;
+                                              });
+        }
+
+        /// <summary>
         ///     Returns the elements from the source observable sequence until the <paramref name="predicate"/> is true. 
         ///     In difference to TakeWhile this method returns the item which matches the predicate.
         /// </summary>
@@ -531,6 +685,39 @@
                                                                    .Where(vh => !vh.Ignore)
                                                                    .Select(vh => vh.Value)
                                                                    .Subscribe(o);
+                                                  });
+        }
+
+        /// <summary>
+        ///     Creates an observable sequence with the possibility to get a subscription where the observable can be notified to stop producing items.
+        ///     Use any of the <see cref="ObservableExtensions.Subscribe{TSource}"/> methods to get an <see cref="IAsyncDisposable"/>.
+        /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of items which is returned by the new observable.
+        /// </typeparam>
+        /// <param name="subscribe">
+        ///     The method which is called upon subscription.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence with the possibility to get a subscription where the observable can be notified to stop producing items.
+        /// </returns>
+        public static IObservable<TResult> CreateWithCancellationSupport<TResult>(
+            Action<IObserver<TResult>, CancellationToken> subscribe)
+        {
+            return Observable.Create<TResult>(
+                                              obs =>
+                                                  {
+                                                      var baseObserver = GetBaseObserver(obs);
+                                                      var token = baseObserver.Token;
+                                                      subscribe(obs, token);
+                                                      return Disposable.Create(
+                                                                               () =>
+                                                                                   {
+                                                                                       if (!baseObserver.IsCompleted)
+                                                                                       {
+                                                                                           throw new InvalidOperationException("Don't unsubscribe!");
+                                                                                       }
+                                                                                   });
                                                   });
         }
 

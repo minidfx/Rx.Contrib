@@ -47,10 +47,12 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncDisposable.cs" />
     <Compile Include="AwaitableSubscription.cs" />
     <Compile Include="IAsyncDisposable.cs" />
     <Compile Include="IAwaitableSubscription.cs" />
     <Compile Include="ObservableExtensions.cs" />
+    <Compile Include="ObserverWithCancellationSupport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueHolder.cs" />
   </ItemGroup>
