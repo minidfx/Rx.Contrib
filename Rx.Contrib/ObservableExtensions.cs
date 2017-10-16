@@ -16,8 +16,7 @@
     /// </summary>
     public static class ObservableExtensions
     {
-        private static ObserverWithCancellationSupport<T> GetBaseObserver<T>(
-            IObserver<T> observer)
+        private static ObserverWithCancellationSupport<T> GetBaseObserver<T>(IObserver<T> observer)
         {
             var observerField = observer.GetType().GetTypeInfo().GetField("observer", BindingFlags.Instance | BindingFlags.NonPublic);
             Debug.Assert(observerField != null, "Apparently the implementation of Rx.NET changed");
@@ -430,8 +429,7 @@
             IObservable<TSource> observable = null;
 
             // ReSharper disable once AccessToModifiedClosure
-            observable = source.Catch<TSource, TException>(
-                                                           ex =>
+            observable = source.Catch<TSource, TException>(ex =>
                                                                {
                                                                    if (where(ex))
                                                                    {
@@ -467,15 +465,13 @@
             int maxRetry)
             where TException : Exception
         {
-            return Observable.Create<TSource>(
-                                              observer =>
+            return Observable.Create<TSource>(observer =>
                                                   {
                                                       IObservable<TSource> observable = null;
                                                       var retryCount = maxRetry;
 
                                                       // ReSharper disable once AccessToModifiedClosure
-                                                      observable = source.Catch<TSource, TException>(
-                                                                                                     ex =>
+                                                      observable = source.Catch<TSource, TException>(ex =>
                                                                                                          {
                                                                                                              if (retryCount == 0)
                                                                                                              {
@@ -632,11 +628,7 @@
         public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
             this IObservable<TSource> source)
         {
-            return InternalSubscribeWithCancellationSupport(
-                                                            source,
-                                                            (
-                                                                token,
-                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs));
+            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs));
         }
 
         /// <summary>
@@ -659,11 +651,7 @@
             this IObservable<TSource> source,
             Action<TSource> onNext)
         {
-            return InternalSubscribeWithCancellationSupport(
-                                                            source,
-                                                            (
-                                                                token,
-                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext));
+            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext));
         }
 
         /// <summary>
@@ -721,11 +709,7 @@
             Action<TSource> onNext,
             Action onCompleted)
         {
-            return InternalSubscribeWithCancellationSupport(
-                                                            source,
-                                                            (
-                                                                token,
-                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, null, onCompleted));
+            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, null, onCompleted));
         }
 
         /// <summary>
@@ -756,11 +740,7 @@
             Action<Exception> onError,
             Action onCompleted)
         {
-            return InternalSubscribeWithCancellationSupport(
-                                                            source,
-                                                            (
-                                                                token,
-                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError, onCompleted));
+            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError, onCompleted));
         }
 
         private static IAsyncDisposable InternalSubscribeWithCancellationSupport<TSource>(
@@ -839,14 +819,12 @@
         public static IObservable<TResult> CreateWithCancellationSupport<TResult>(
             Action<IObserver<TResult>, CancellationToken> subscribe)
         {
-            return Observable.Create<TResult>(
-                                              obs =>
+            return Observable.Create<TResult>(obs =>
                                                   {
                                                       var baseObserver = GetBaseObserver(obs);
                                                       var token = baseObserver.Token;
                                                       subscribe(obs, token);
-                                                      return Disposable.Create(
-                                                                               () =>
+                                                      return Disposable.Create(() =>
                                                                                    {
                                                                                        if (!baseObserver.IsCompleted)
                                                                                        {

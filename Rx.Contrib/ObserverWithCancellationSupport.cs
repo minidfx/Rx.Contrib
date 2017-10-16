@@ -14,12 +14,11 @@
     {
         #region Constructors and Destructors
 
-        public ObserverWithCancellationSupport(
-            CancellationToken token,
-            TaskCompletionSource<object> taskCompletionSource,
-            Action<TSource> onNext = null,
-            Action<Exception> onError = null,
-            Action onCompleted = null)
+        public ObserverWithCancellationSupport(CancellationToken token,
+                                               TaskCompletionSource<object> taskCompletionSource,
+                                               Action<TSource> onNext = null,
+                                               Action<Exception> onError = null,
+                                               Action onCompleted = null)
         {
             this.Token = token;
             this.taskCompletionSource = taskCompletionSource;
@@ -60,15 +59,13 @@
             this.onCompleted();
         }
 
-        public void OnError(
-            Exception error)
+        public void OnError(Exception error)
         {
             this.taskCompletionSource.SetException(error);
             this.onError(error);
         }
 
-        public void OnNext(
-            TSource value)
+        public void OnNext(TSource value)
         {
             this.onNext(value);
         }
