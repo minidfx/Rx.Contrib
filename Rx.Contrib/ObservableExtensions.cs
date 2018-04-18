@@ -11,12 +11,15 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using JetBrains.Annotations;
+
     /// <summary>
     ///   Add some useful methods for Rx.
     /// </summary>
     public static class ObservableExtensions
     {
-        private static ObserverWithCancellationSupport<T> GetBaseObserver<T>(IObserver<T> observer)
+        private static ObserverWithCancellationSupport<T> GetBaseObserver<T>(
+            IObserver<T> observer)
         {
             var observerField = observer.GetType().GetTypeInfo().GetField("observer", BindingFlags.Instance | BindingFlags.NonPublic);
             Debug.Assert(observerField != null, "Apparently the implementation of Rx.NET changed");
@@ -37,6 +40,7 @@
         /// <returns>
         ///   A new <see cref="IObservable{TSource}" /> which completes when the <paramref name="source" /> task is finished.
         /// </returns>
+        [PublicAPI]
         public static IObservable<TSource> Await<TSource>(this IObservable<Task<TSource>> source)
         {
             return source.Concat();
@@ -55,6 +59,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source)
         {
             return new AwaitableSubscription<TSource>(source);
@@ -76,6 +81,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext)
         {
@@ -101,6 +107,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
                                                                             Action<Exception> onError)
@@ -127,6 +134,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
                                                                             Action onCompleted)
@@ -156,6 +164,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
                                                                             Action<Exception> onError,
@@ -183,6 +192,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             IObserver<TSource> observer,
                                                                             CancellationToken token)
@@ -206,6 +216,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             CancellationToken token)
         {
@@ -234,6 +245,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
                                                                             Action<Exception> onError,
@@ -267,6 +279,7 @@
         /// <returns>
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
+        [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
                                                                             Action<Exception> onError,
@@ -293,6 +306,7 @@
         ///     A new <see cref="IObservable{TSource}"/> which completes when the <paramref name="source"/>
         ///     and <paramref name="task"/> are finished.
         /// </returns>
+        [PublicAPI]
         public static IObservable<TSource> BlockUntil<TSource>(this IObservable<TSource> source,
                                                                Task task)
         {
@@ -343,6 +357,7 @@
         /// <returns>
         ///     An <see cref="IObservable{TSource}"/> sequence that contains the elements of the first sequence yielding at least one message, followed by those of next sequences.
         /// </returns>
+        [PublicAPI]
         public static IObservable<TSource> ConcatUntilAny<TSource>(this IEnumerable<IObservable<TSource>> observables)
         {
             return observables.Select(obs => obs.Select(item => new
@@ -355,7 +370,8 @@
                                                          i) => new
                                                                    {
                                                                        Index = i,
-                                                                       t.IsEndMarker, t.Item
+                                                                       t.IsEndMarker,
+                                                                       t.Item
                                                                    }))
                               .Concat()
                               .TakeUntil(x => x.Index > 0 && x.IsEndMarker)
@@ -373,6 +389,7 @@
         /// <returns>
         ///   An observable sequence that produces a value at the beginning and after each period.
         /// </returns>
+        [PublicAPI]
         public static IObservable<long> IntervalStartAtBegining(TimeSpan interval)
         {
             return Observable.Return(0L).Concat(Observable.Interval(interval)).Select(x => x + 1);
@@ -393,7 +410,9 @@
         /// <returns>
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully when the <typeparamref name="TException"/> occurred.
         /// </returns>
-        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source) where TException : Exception
+        [PublicAPI]
+        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source)
+            where TException : Exception
         {
             var observable = Observable.Empty<TSource>();
 
@@ -421,6 +440,7 @@
         /// <returns>
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
         /// </returns>
+        [PublicAPI]
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source,
                                                                       Func<TException, bool> where)
             where TException : Exception
@@ -459,6 +479,7 @@
         /// <returns>
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
         /// </returns>
+        [PublicAPI]
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source,
                                                                       int maxRetry)
             where TException : Exception
@@ -487,6 +508,7 @@
         /// <returns>
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
         /// </returns>
+        [PublicAPI]
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source, int maxRetry, TimeSpan after)
             where TException : Exception
         {
@@ -535,9 +557,9 @@
         /// <exception cref="T:System.ArgumentNullException">
         ///     <paramref name="source"/> or <paramref name="selector"/> is null.
         /// </exception>
-        public static IObservable<TResult> SelectAsyncCancelling<TSource, TResult>(
-            this IObservable<TSource> source,
-            Func<CancellationToken, TSource, Task<TResult>> selector)
+        [PublicAPI]
+        public static IObservable<TResult> SelectAsyncCancelling<TSource, TResult>(this IObservable<TSource> source,
+                                                                                   Func<CancellationToken, TSource, Task<TResult>> selector)
         {
             return source.Select(o => Observable.FromAsync(cancellationToken => selector(cancellationToken, o))).Switch();
         }
@@ -560,6 +582,7 @@
         /// <exception cref="T:System.ArgumentNullException">
         ///     <paramref name="source"/> or <paramref name="selector"/> is null.
         /// </exception>
+        [PublicAPI]
         public static IObservable<TResult> SelectAsyncParallel<TSource, TResult>(this IObservable<TSource> source,
                                                                                  Func<TSource, CancellationToken, Task<TResult>> selector)
         {
@@ -585,6 +608,7 @@
         /// <exception cref="T:System.ArgumentNullException">
         ///     <paramref name="source"/> or <paramref name="selector"/> is null.
         /// </exception>
+        [PublicAPI]
         public static IObservable<TResult> SelectAsyncSequentially<TSource, TResult>(this IObservable<TSource> source,
                                                                                      Func<TSource, CancellationToken, Task<TResult>> selector)
         {
@@ -615,6 +639,7 @@
         /// <exception cref="T:System.ArgumentNullException">
         ///   <paramref name="source" /> or <paramref name="selector" /> is null.
         /// </exception>
+        [PublicAPI]
         public static IObservable<TResult> SelectAsyncSkipping<TSource, TResult>(this IObservable<TSource> source,
                                                                                  Func<CancellationToken, TSource, Task<TResult>> selector)
         {
@@ -653,10 +678,14 @@
         /// <returns>
         ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
         /// </returns>
-        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
-            this IObservable<TSource> source)
+        [PublicAPI]
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source)
         {
-            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs));
+            return InternalSubscribeWithCancellationSupport(
+                                                            source,
+                                                            (
+                                                                token,
+                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs));
         }
 
         /// <summary>
@@ -675,9 +704,9 @@
         /// <returns>
         ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
         /// </returns>
-        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
-            this IObservable<TSource> source,
-            Action<TSource> onNext)
+        [PublicAPI]
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
+                                                                                 Action<TSource> onNext)
         {
             return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext));
         }
@@ -701,10 +730,10 @@
         /// <returns>
         ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
         /// </returns>
-        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
-            this IObservable<TSource> source,
-            Action<TSource> onNext,
-            Action<Exception> onError)
+        [PublicAPI]
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
+                                                                                 Action<TSource> onNext,
+                                                                                 Action<Exception> onError)
         {
             return InternalSubscribeWithCancellationSupport(
                                                             source,
@@ -732,10 +761,10 @@
         /// <returns>
         ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
         /// </returns>
-        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
-            this IObservable<TSource> source,
-            Action<TSource> onNext,
-            Action onCompleted)
+        [PublicAPI]
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
+                                                                                 Action<TSource> onNext,
+                                                                                 Action onCompleted)
         {
             return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, null, onCompleted));
         }
@@ -762,31 +791,17 @@
         /// <returns>
         ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
         /// </returns>
-        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(
-            this IObservable<TSource> source,
-            Action<TSource> onNext,
-            Action<Exception> onError,
-            Action onCompleted)
+        [PublicAPI]
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
+                                                                                 Action<TSource> onNext,
+                                                                                 Action<Exception> onError,
+                                                                                 Action onCompleted)
         {
-            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError, onCompleted));
-        }
-
-        private static IAsyncDisposable InternalSubscribeWithCancellationSupport<TSource>(
-            IObservable<TSource> source,
-            Func<CancellationToken, TaskCompletionSource<object>, ObserverWithCancellationSupport<TSource>> observerFactory)
-        {
-            var taskCompletionSource = new TaskCompletionSource<object>();
-
-            var cancellationTokenSource = new CancellationTokenSource();
-
-            source.Subscribe(observerFactory(cancellationTokenSource.Token, taskCompletionSource));
-
-            return AsyncDisposable.Create(
-                                          () =>
-                                              {
-                                                  cancellationTokenSource.Cancel();
-                                                  return taskCompletionSource.Task;
-                                              });
+            return InternalSubscribeWithCancellationSupport(
+                                                            source,
+                                                            (
+                                                                token,
+                                                                tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError, onCompleted));
         }
 
         /// <summary>
@@ -805,9 +820,9 @@
         /// <returns>
         ///     An observable sequence containing the elements of the source sequence up to the point the other sequence interrupted further propagation.
         /// </returns>
-        public static IObservable<TSource> TakeUntil<TSource>(
-            this IObservable<TSource> source,
-            Func<TSource, bool> predicate)
+        [PublicAPI]
+        public static IObservable<TSource> TakeUntil<TSource>(this IObservable<TSource> source,
+                                                              Func<TSource, bool> predicate)
         {
             return Observable.Create<TSource>(o =>
                                                   {
@@ -844,15 +859,17 @@
         /// <returns>
         ///     An observable sequence with the possibility to get a subscription where the observable can be notified to stop producing items.
         /// </returns>
-        public static IObservable<TResult> CreateWithCancellationSupport<TResult>(
-            Action<IObserver<TResult>, CancellationToken> subscribe)
+        [PublicAPI]
+        public static IObservable<TResult> CreateWithCancellationSupport<TResult>(Action<IObserver<TResult>, CancellationToken> subscribe)
         {
-            return Observable.Create<TResult>(obs =>
+            return Observable.Create<TResult>(
+                                              obs =>
                                                   {
                                                       var baseObserver = GetBaseObserver(obs);
                                                       var token = baseObserver.Token;
                                                       subscribe(obs, token);
-                                                      return Disposable.Create(() =>
+                                                      return Disposable.Create(
+                                                                               () =>
                                                                                    {
                                                                                        if (!baseObserver.IsCompleted)
                                                                                        {
@@ -860,6 +877,33 @@
                                                                                        }
                                                                                    });
                                                   });
+        }
+
+        #endregion
+
+        #region Private Members
+
+        private static IAsyncDisposable InternalSubscribeWithCancellationSupport<TSource>(IObservable<TSource> source,
+                                                                                          Func<CancellationToken, TaskCompletionSource<object>, ObserverWithCancellationSupport<TSource>> observerFactory)
+        {
+            var taskCompletionSource = new TaskCompletionSource<object>();
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            source.Subscribe(observerFactory(cancellationTokenSource.Token, taskCompletionSource));
+
+            return AsyncDisposable.Create(() =>
+                                              {
+                                                  cancellationTokenSource.Cancel();
+                                                  return taskCompletionSource.Task;
+                                              });
+        }
+
+        private static ObserverWithCancellationSupport<T> GetBaseObserver<T>(
+            IObserver<T> observer)
+        {
+            var observerField = observer.GetType().GetTypeInfo().GetField("observer", BindingFlags.Instance | BindingFlags.NonPublic);
+            Debug.Assert(observerField != null, "Apparently the implementation of Rx.NET changed");
+            return (ObserverWithCancellationSupport<T>)observerField.GetValue(observer);
         }
 
         #endregion

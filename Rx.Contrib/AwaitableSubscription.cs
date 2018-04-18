@@ -245,10 +245,7 @@
         /// </returns>
         public Task DisposeAsync()
         {
-            if (this.subscription != null)
-            {
-                this.subscription.Dispose();
-            }
+            this.subscription?.Dispose();
 
             return this.tcs.Task;
         }

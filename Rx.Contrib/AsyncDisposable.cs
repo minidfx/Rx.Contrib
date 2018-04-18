@@ -52,7 +52,7 @@
             var localDisposeTask = Interlocked.Exchange(ref this.disposeTask, null);
 
             var task = localDisposeTask == null
-                           ? Task.CompletedTask
+                           ? Task.FromResult(0)
                            : localDisposeTask();
 
             return task;
