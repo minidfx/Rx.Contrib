@@ -421,9 +421,8 @@
         /// <returns>
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
         /// </returns>
-        public static IObservable<TSource> Retry<TSource, TException>(
-            this IObservable<TSource> source,
-            Func<TException, bool> where)
+        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source,
+                                                                      Func<TException, bool> where)
             where TException : Exception
         {
             IObservable<TSource> observable = null;
@@ -460,29 +459,58 @@
         /// <returns>
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
         /// </returns>
-        public static IObservable<TSource> Retry<TSource, TException>(
-            this IObservable<TSource> source,
-            int maxRetry)
+        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source,
+                                                                      int maxRetry)
             where TException : Exception
         {
-            return Observable.Create<TSource>(observer =>
+            return source.Retry<TSource, TException>(maxRetry, TimeSpan.Zero);
+        }
+
+        /// <summary>
+        ///     Retries if there is an <typeparamref name="TException"/>.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <typeparam name="TException">
+        ///     The type of exception on which it should retry.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to retry in case of an <typeparamref name="TException"/>.
+        /// </param>
+        /// <param name="maxRetry">
+        ///     How many times to retry.
+        /// </param>
+        /// <param name="after">
+        ///     The delay when the observable will be re-executed.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
+        /// </returns>
+        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source, int maxRetry, TimeSpan after)
+            where TException : Exception
+        {
+            return Observable.Create<TSource>(o =>
                                                   {
                                                       IObservable<TSource> observable = null;
                                                       var retryCount = maxRetry;
-
-                                                      // ReSharper disable once AccessToModifiedClosure
-                                                      observable = source.Catch<TSource, TException>(ex =>
+                                                      observable = source.Catch<TSource, TException>(x =>
                                                                                                          {
                                                                                                              if (retryCount == 0)
                                                                                                              {
-                                                                                                                 return Observable.Throw<TSource>(ex);
+                                                                                                                 return Observable.Throw<TSource>(x);
                                                                                                              }
 
                                                                                                              retryCount--;
-                                                                                                             return observable;
+
+                                                                                                             return after != TimeSpan.Zero
+                                                                                                                        // ReSharper disable once AccessToModifiedClosure
+                                                                                                                        ? Observable.Timer(after).Select(_ => observable).Concat()
+                                                                                                                        // ReSharper disable once AccessToModifiedClosure
+                                                                                                                        : observable;
                                                                                                          });
 
-                                                      return observable.Subscribe(observer);
+                                                      return observable.Subscribe(o);
                                                   });
         }
 
