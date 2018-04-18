@@ -18,14 +18,6 @@
     /// </summary>
     public static class ObservableExtensions
     {
-        private static ObserverWithCancellationSupport<T> GetBaseObserver<T>(
-            IObserver<T> observer)
-        {
-            var observerField = observer.GetType().GetTypeInfo().GetField("observer", BindingFlags.Instance | BindingFlags.NonPublic);
-            Debug.Assert(observerField != null, "Apparently the implementation of Rx.NET changed");
-            return (ObserverWithCancellationSupport<T>)observerField.GetValue(observer);
-        }
-
         #region Public Methods and Operators
 
         /// <summary>

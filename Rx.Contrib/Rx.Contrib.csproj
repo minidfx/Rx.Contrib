@@ -1,15 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net451</TargetFrameworks>
     <AssemblyName>Rx.Contrib</AssemblyName>
     <PackageId>Rx.Contrib</PackageId>
-    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <PackageProjectUrl>https://github.com/minidfx/Rx.Contrib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/minidfx/Rx.Contrib</RepositoryUrl>
+    <PackageTags>ReactiveExtensions, Rx, Observable</PackageTags>
+    <Version>1.1.1</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>bin\Release\Rx.Contrib.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
