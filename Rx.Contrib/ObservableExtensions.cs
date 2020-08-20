@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Reactive.Concurrency;
     using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Reactive.Threading.Tasks;
@@ -504,9 +505,50 @@
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
         /// </returns>
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source,
+                                                                      int maxRetry,
+                                                                      TimeSpan after,
+                                                                      Predicate<TException> condition)
+            where TException : Exception
+        {
+            return source.Retry(maxRetry,
+                                after,
+                                condition,
+                                Scheduler.Default);
+        }
+
+        /// <summary>
+        ///     Retries if there is an <typeparamref name="TException"/>.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <typeparam name="TException">
+        ///     The type of exception on which it should retry.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to retry in case of an <typeparamref name="TException"/>.
+        /// </param>
+        /// <param name="maxRetry">
+        ///     How many times to retry.
+        /// </param>
+        /// <param name="after">
+        ///     The delay when the observable will be re-executed.
+        /// </param>
+        /// <param name="condition">
+        ///    The predicate to determine whether you have to retry.
+        /// </param>
+        /// <param name="scheduler">
+        ///    The scheduler to run the timer on.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
+        /// </returns>
+        [PublicAPI]
+        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source,
                                                           int maxRetry,
                                                           TimeSpan after,
-                                                          Predicate<TException> condition)
+                                                          Predicate<TException> condition,
+                                                          IScheduler scheduler)
             where TException : Exception
         {
             return Observable.Create<TSource>(o =>
@@ -528,7 +570,7 @@
                                                                                          --retryCount;
 
                                                                                          // ReSharper disable once AccessToModifiedClosure
-                                                                                         return Observable.Timer(after).Select(_ => observable).Concat();
+                                                                                         return Observable.Timer(after, scheduler).Select(_ => observable).Concat();
                                                                                      });
 
                                             return observable.Subscribe(o);
@@ -560,6 +602,42 @@
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source, int maxRetry, TimeSpan after)
             where TException : Exception
         {
+            return source.Retry<TSource, TException>(maxRetry,
+                                                     after,
+                                                     Scheduler.Default);
+        }
+
+        /// <summary>
+        ///     Retries if there is an <typeparamref name="TException"/>.
+        /// </summary>
+        /// <typeparam name="TSource">
+        ///     The type of the elements in the source sequence.
+        /// </typeparam>
+        /// <typeparam name="TException">
+        ///     The type of exception on which it should retry.
+        /// </typeparam>
+        /// <param name="source">
+        ///     Source sequence to retry in case of an <typeparamref name="TException"/>.
+        /// </param>
+        /// <param name="maxRetry">
+        ///     How many times to retry.
+        /// </param>
+        /// <param name="after">
+        ///     The delay when the observable will be re-executed.
+        /// </param>
+        /// <param name="scheduler">
+        ///     The scheduler to run the timer on.
+        /// </param>
+        /// <returns>
+        ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
+        /// </returns>
+        [PublicAPI]
+        public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source, 
+                                                                      int maxRetry, 
+                                                                      TimeSpan after, 
+                                                                      IScheduler scheduler)
+            where TException : Exception
+        {
             return Observable.Create<TSource>(o =>
                                                   {
                                                       IObservable<TSource> observable = null;
@@ -575,7 +653,7 @@
 
                                                                                                              return after != TimeSpan.Zero
                                                                                                                         // ReSharper disable once AccessToModifiedClosure
-                                                                                                                        ? Observable.Timer(after).Select(_ => observable).Concat()
+                                                                                                                        ? Observable.Timer(after, scheduler).Select(_ => observable).Concat()
                                                                                                                         // ReSharper disable once AccessToModifiedClosure
                                                                                                                         : observable;
                                                                                                          });
