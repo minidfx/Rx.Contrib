@@ -6,4 +6,4 @@ script:
   - dotnet restore
   - dotnet build -f netstandard2.0
 notifications:
-  webhooks: https://outlook.office.com/webhook/2b7add9b-4261-4095-8521-3bcf267a002d@990414fa-d0a3-42f5-b740-21d864a44a28/TravisCI/de007a57b1d343699e8a09d075163eac/539ce6fa-e9aa-413f-a79b-fb7e8998fcac
+  webhooks: https://outlook.office.com/webhook/2f92c602-7feb-4a6c-86f1-477271aec76f@990414fa-d0a3-42f5-b740-21d864a44a28/IncomingWebhook/54e43eb586f14aa9984d4c0bec3d5050/539ce6fa-e9aa-413f-a79b-fb7e8998fcac
