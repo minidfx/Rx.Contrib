@@ -1020,7 +1020,7 @@
             return AsyncDisposable.Create(() =>
                                               {
                                                   cancellationTokenSource.Cancel();
-                                                  return taskCompletionSource.Task;
+                                                  return new ValueTask(taskCompletionSource.Task);
                                               });
         }
 

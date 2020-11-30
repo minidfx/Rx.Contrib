@@ -241,13 +241,13 @@
         ///   asynchronously.
         /// </summary>
         /// <returns>
-        ///   A <see cref="T:System.Threading.Tasks.Task" /> representing the outcome of the operation.
+        ///   A <see cref="ValueTask" /> representing the outcome of the operation.
         /// </returns>
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             this.subscription?.Dispose();
 
-            return this.tcs.Task;
+            return new ValueTask(this.tcs.Task);
         }
 
         #endregion
