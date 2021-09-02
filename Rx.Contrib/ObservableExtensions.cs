@@ -447,7 +447,7 @@
         ///     Source sequence to retry in case of an <typeparamref name="TException"/>.
         /// </param>
         /// <param name="where">
-        ///     Filter is applied to catched exceptions.
+        ///     Filter is applied to caught exceptions.
         /// </param>
         /// <returns>
         ///     An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or with a different exception.
