@@ -65,10 +65,7 @@
             this.onError(error);
         }
 
-        public void OnNext(TSource value)
-        {
-            this.onNext(value);
-        }
+        public void OnNext(TSource value) => this.onNext(value);
 
         #endregion
     }

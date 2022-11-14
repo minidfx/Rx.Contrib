@@ -216,10 +216,7 @@
             newSource.Subscribe(onNext, onError, onCompleted, token);
         }
 
-        private AwaitableSubscription()
-        {
-            this.tcs = new TaskCompletionSource<TSource>();
-        }
+        private AwaitableSubscription() => this.tcs = new TaskCompletionSource<TSource>();
 
         #endregion
 
@@ -231,10 +228,7 @@
         /// <returns>
         ///     A <see cref="T:System.Threading.Tasks.Task" /> representing the outcome of the operation.
         /// </returns>
-        public Task Await()
-        {
-            return this.tcs.Task;
-        }
+        public Task Await() => this.tcs.Task;
 
         /// <summary>
         ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources

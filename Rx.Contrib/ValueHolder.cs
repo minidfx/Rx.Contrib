@@ -19,8 +19,7 @@
         /// <param name="ignore">
         ///   Determines if the message has to be ignored or not.
         /// </param>
-        public ValueHolder(TSource o,
-                           bool ignore = false)
+        public ValueHolder(TSource o, bool ignore = false)
             : this()
         {
             this.Value = o;
@@ -34,10 +33,8 @@
         ///   Determines if the message has to be ignored or not.
         /// </param>
         public ValueHolder(bool ignore)
-            : this()
-        {
+            : this() =>
             this.Ignore = ignore;
-        }
 
         #endregion
 
@@ -46,12 +43,12 @@
         /// <summary>
         ///   Gets a value indicating whether the message has to be ignored or not.
         /// </summary>
-        public bool Ignore { get; private set; }
+        public bool Ignore { get; }
 
         /// <summary>
         ///   Gets the message wrapped.
         /// </summary>
-        public TSource Value { get; private set; }
+        public TSource Value { get; }
 
         #endregion
     }

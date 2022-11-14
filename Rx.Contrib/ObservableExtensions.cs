@@ -34,10 +34,7 @@
         ///   A new <see cref="IObservable{TSource}" /> which completes when the <paramref name="source" /> task is finished.
         /// </returns>
         [PublicAPI]
-        public static IObservable<TSource> Await<TSource>(this IObservable<Task<TSource>> source)
-        {
-            return source.Concat();
-        }
+        public static IObservable<TSource> Await<TSource>(this IObservable<Task<TSource>> source) => source.Concat();
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -53,10 +50,7 @@
         ///   An instance of <see cref="IAsyncDisposable" /> awaitable.
         /// </returns>
         [PublicAPI]
-        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source)
-        {
-            return new AwaitableSubscription<TSource>(source);
-        }
+        public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source) => new AwaitableSubscription<TSource>(source);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -76,10 +70,8 @@
         /// </returns>
         [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                            Action<TSource> onNext)
-        {
-            return new AwaitableSubscription<TSource>(source, onNext);
-        }
+                                                                            Action<TSource> onNext) =>
+            new AwaitableSubscription<TSource>(source, onNext);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -103,10 +95,8 @@
         [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
-                                                                            Action<Exception> onError)
-        {
-            return new AwaitableSubscription<TSource>(source, onNext, onError);
-        }
+                                                                            Action<Exception> onError) =>
+            new AwaitableSubscription<TSource>(source, onNext, onError);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -130,10 +120,8 @@
         [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
-                                                                            Action onCompleted)
-        {
-            return new AwaitableSubscription<TSource>(source, onNext, onCompleted);
-        }
+                                                                            Action onCompleted) =>
+            new AwaitableSubscription<TSource>(source, onNext, onCompleted);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -161,10 +149,8 @@
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
                                                                             Action<Exception> onError,
-                                                                            Action onCompleted)
-        {
-            return new AwaitableSubscription<TSource>(source, onNext, onError, onCompleted);
-        }
+                                                                            Action onCompleted) =>
+            new AwaitableSubscription<TSource>(source, onNext, onError, onCompleted);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -188,10 +174,8 @@
         [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             IObserver<TSource> observer,
-                                                                            CancellationToken token)
-        {
-            return new AwaitableSubscription<TSource>(source, observer, token);
-        }
+                                                                            CancellationToken token) =>
+            new AwaitableSubscription<TSource>(source, observer, token);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -211,10 +195,8 @@
         /// </returns>
         [PublicAPI]
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
-                                                                            CancellationToken token)
-        {
-            return new AwaitableSubscription<TSource>(source, token);
-        }
+                                                                            CancellationToken token) =>
+            new AwaitableSubscription<TSource>(source, token);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -242,10 +224,8 @@
         public static IAwaitableSubscription AwaitableSubscription<TSource>(this IObservable<TSource> source,
                                                                             Action<TSource> onNext,
                                                                             Action<Exception> onError,
-                                                                            CancellationToken token)
-        {
-            return new AwaitableSubscription<TSource>(source, onNext, onError, token);
-        }
+                                                                            CancellationToken token) =>
+            new AwaitableSubscription<TSource>(source, onNext, onError, token);
 
         /// <summary>
         ///   Returns an <see cref="IAsyncDisposable" /> that you can wait for until the subscription on the
@@ -277,10 +257,8 @@
                                                                             Action<TSource> onNext,
                                                                             Action<Exception> onError,
                                                                             Action onCompleted,
-                                                                            CancellationToken token)
-        {
-            return new AwaitableSubscription<TSource>(source, onNext, onError, onCompleted, token);
-        }
+                                                                            CancellationToken token) =>
+            new AwaitableSubscription<TSource>(source, onNext, onError, onCompleted, token);
 
         /// <summary>
         ///     Blocks the completion of the <paramref name="source"/> until the <paramref name="task"/>
@@ -301,42 +279,40 @@
         /// </returns>
         [PublicAPI]
         public static IObservable<TSource> BlockUntil<TSource>(this IObservable<TSource> source,
-                                                               Task task)
-        {
-            return Observable.Create<TSource>(observer =>
-                                                  {
-                                                      var tcs = new TaskCompletionSource<ValueHolder<TSource>>(TaskCreationOptions.RunContinuationsAsynchronously);
+                                                               Task task) =>
+            Observable.Create<TSource>(observer =>
+                                           {
+                                               var tcs = new TaskCompletionSource<ValueHolder<TSource>>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-                                                      Exception delayedException = null;
+                                               Exception delayedException = null;
 
-                                                      return source.Select(o => new ValueHolder<TSource>(o))
-                                                                   .Finally(() => task.ContinueWith(t =>
+                                               return source.Select(o => new ValueHolder<TSource>(o))
+                                                            .Finally(() => task.ContinueWith(t =>
+                                                                                                 {
+                                                                                                     if (delayedException != null)
+                                                                                                     {
+                                                                                                         tcs.SetException(delayedException);
+                                                                                                         return;
+                                                                                                     }
+
+                                                                                                     if (t.Exception != null)
+                                                                                                     {
+                                                                                                         tcs.SetException(t.Exception);
+                                                                                                         return;
+                                                                                                     }
+
+                                                                                                     tcs.SetResult(new ValueHolder<TSource>(true));
+                                                                                                 }))
+                                                            .Catch<ValueHolder<TSource>, Exception>(ex =>
                                                                                                         {
-                                                                                                            if (delayedException != null)
-                                                                                                            {
-                                                                                                                tcs.SetException(delayedException);
-                                                                                                                return;
-                                                                                                            }
-
-                                                                                                            if (t.Exception != null)
-                                                                                                            {
-                                                                                                                tcs.SetException(t.Exception);
-                                                                                                                return;
-                                                                                                            }
-
-                                                                                                            tcs.SetResult(new ValueHolder<TSource>(true));
-                                                                                                        }))
-                                                                   .Catch<ValueHolder<TSource>, Exception>(ex =>
-                                                                                                               {
-                                                                                                                   delayedException = ex;
-                                                                                                                   return tcs.Task.ToObservable();
-                                                                                                               })
-                                                                   .Concat(tcs.Task.ToObservable())
-                                                                   .Where(o => !o.Ignore)
-                                                                   .Select(o => o.Value)
-                                                                   .Subscribe(observer);
-                                                  });
-        }
+                                                                                                            delayedException = ex;
+                                                                                                            return tcs.Task.ToObservable();
+                                                                                                        })
+                                                            .Concat(tcs.Task.ToObservable())
+                                                            .Where(o => !o.Ignore)
+                                                            .Select(o => o.Value)
+                                                            .Subscribe(observer);
+                                           });
 
         /// <summary>
         ///     Concatenates <paramref name="observables"/> sequence to each other sequence until an <see cref="IObservable{TSource}"/> yields at least 1 message.
@@ -351,26 +327,24 @@
         ///     An <see cref="IObservable{TSource}"/> sequence that contains the elements of the first sequence yielding at least one message, followed by those of next sequences.
         /// </returns>
         [PublicAPI]
-        public static IObservable<TSource> ConcatUntilAny<TSource>(this IEnumerable<IObservable<TSource>> observables)
-        {
-            return observables.Select(obs => obs.Select(item => new
-                                                                    {
-                                                                        IsEndMarker = false,
-                                                                        Item = item
-                                                                    })
-                                                .Concat(Observable.Return(new { IsEndMarker = true, Item = default(TSource) }))
-                                                .Select((t,
-                                                         i) => new
-                                                                   {
-                                                                       Index = i,
-                                                                       t.IsEndMarker,
-                                                                       t.Item
-                                                                   }))
-                              .Concat()
-                              .TakeUntil(x => x.Index > 0 && x.IsEndMarker)
-                              .Where(t => !t.IsEndMarker)
-                              .Select(t => t.Item);
-        }
+        public static IObservable<TSource> ConcatUntilAny<TSource>(this IEnumerable<IObservable<TSource>> observables) =>
+            observables.Select(obs => obs.Select(item => new
+                                                             {
+                                                                 IsEndMarker = false,
+                                                                 Item = item
+                                                             })
+                                         .Concat(Observable.Return(new { IsEndMarker = true, Item = default(TSource) }))
+                                         .Select((t,
+                                                  i) => new
+                                                            {
+                                                                Index = i,
+                                                                t.IsEndMarker,
+                                                                t.Item
+                                                            }))
+                       .Concat()
+                       .TakeUntil(x => x.Index > 0 && x.IsEndMarker)
+                       .Where(t => !t.IsEndMarker)
+                       .Select(t => t.Item);
 
         /// <summary>
         ///   Starts an observable with an <paramref name="interval" /> yielding the first message at the beginning.
@@ -386,10 +360,7 @@
         ///   An observable sequence that produces a value at the beginning and after each period.
         /// </returns>
         [PublicAPI]
-        public static IObservable<long> IntervalStartAtBeginning(TimeSpan interval, IScheduler scheduler)
-        {
-            return Observable.Return(0L).Concat(Observable.Interval(interval, scheduler)).Select(x => x + 1);
-        }
+        public static IObservable<long> IntervalStartAtBeginning(TimeSpan interval, IScheduler scheduler) => Observable.Return(0L).Concat(Observable.Interval(interval, scheduler)).Select(x => x + 1);
 
         /// <summary>
         ///   Starts an observable with an <paramref name="interval" /> yielding the first message at the beginning.
@@ -402,10 +373,7 @@
         ///   An observable sequence that produces a value at the beginning and after each period.
         /// </returns>
         [PublicAPI]
-        public static IObservable<long> IntervalStartAtBeginning(TimeSpan interval)
-        {
-            return IntervalStartAtBeginning(interval, Scheduler.Default);
-        }
+        public static IObservable<long> IntervalStartAtBeginning(TimeSpan interval) => IntervalStartAtBeginning(interval, Scheduler.Default);
 
         /// <summary>
         ///     Repeats the source observable sequence until it successfully terminates when the <typeparamref name="TException"/> occurred.
@@ -429,7 +397,7 @@
             var observable = Observable.Empty<TSource>();
 
             // ReSharper disable once AccessToModifiedClosure
-            observable = source.Catch<TSource, TException>(e => observable);
+            observable = source.Catch<TSource, TException>(_ => observable);
 
             return observable;
         }
@@ -494,10 +462,8 @@
         [PublicAPI]
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source,
                                                                       int maxRetry)
-            where TException : Exception
-        {
-            return source.Retry<TSource, TException>(maxRetry, TimeSpan.Zero);
-        }
+            where TException : Exception =>
+            source.Retry<TSource, TException>(maxRetry, TimeSpan.Zero);
 
         /// <summary>
         ///     Retries if there is an <typeparamref name="TException"/>.
@@ -527,13 +493,11 @@
                                                                       int maxRetry,
                                                                       TimeSpan after,
                                                                       Predicate<TException> condition)
-            where TException : Exception
-        {
-            return source.Retry(maxRetry,
-                                after,
-                                condition,
-                                Scheduler.Default);
-        }
+            where TException : Exception =>
+            source.Retry(maxRetry,
+                         after,
+                         condition,
+                         Scheduler.Default);
 
         /// <summary>
         ///     Retries if there is an <typeparamref name="TException"/>.
@@ -568,33 +532,31 @@
                                                                       TimeSpan after,
                                                                       Predicate<TException> condition,
                                                                       IScheduler scheduler)
-            where TException : Exception
-        {
-            return Observable.Create<TSource>(o =>
-                                                  {
-                                                      IObservable<TSource> observable = null;
-                                                      var retryCount = maxRetry;
-                                                      observable = source.Catch<TSource, TException>(x =>
-                                                                                                         {
-                                                                                                             if (!condition(x))
-                                                                                                             {
-                                                                                                                 return Observable.Throw<TSource>(x, scheduler);
-                                                                                                             }
+            where TException : Exception =>
+            Observable.Create<TSource>(o =>
+                                           {
+                                               IObservable<TSource> observable = null;
+                                               var retryCount = maxRetry;
+                                               observable = source.Catch<TSource, TException>(x =>
+                                                                                                  {
+                                                                                                      if (!condition(x))
+                                                                                                      {
+                                                                                                          return Observable.Throw<TSource>(x, scheduler);
+                                                                                                      }
 
-                                                                                                             if (retryCount == 0)
-                                                                                                             {
-                                                                                                                 return Observable.Throw<TSource>(x, scheduler);
-                                                                                                             }
+                                                                                                      if (retryCount == 0)
+                                                                                                      {
+                                                                                                          return Observable.Throw<TSource>(x, scheduler);
+                                                                                                      }
 
-                                                                                                             --retryCount;
+                                                                                                      --retryCount;
 
-                                                                                                             // ReSharper disable once AccessToModifiedClosure
-                                                                                                             return Observable.Timer(after, scheduler).Select(_ => observable).Concat();
-                                                                                                         });
+                                                                                                      // ReSharper disable once AccessToModifiedClosure
+                                                                                                      return Observable.Timer(after, scheduler).Select(_ => observable).Concat();
+                                                                                                  });
 
-                                                      return observable.Subscribe(o);
-                                                  });
-        }
+                                               return observable.Subscribe(o);
+                                           });
 
         /// <summary>
         ///     Retries if there is an <typeparamref name="TException"/>.
@@ -619,12 +581,10 @@
         /// </returns>
         [PublicAPI]
         public static IObservable<TSource> Retry<TSource, TException>(this IObservable<TSource> source, int maxRetry, TimeSpan after)
-            where TException : Exception
-        {
-            return source.Retry<TSource, TException>(maxRetry,
-                                                     after,
-                                                     Scheduler.Default);
-        }
+            where TException : Exception =>
+            source.Retry<TSource, TException>(maxRetry,
+                                              after,
+                                              Scheduler.Default);
 
         /// <summary>
         ///     Retries if there is an <typeparamref name="TException"/>.
@@ -655,31 +615,29 @@
                                                                       int maxRetry,
                                                                       TimeSpan after,
                                                                       IScheduler scheduler)
-            where TException : Exception
-        {
-            return Observable.Create<TSource>(o =>
-                                                  {
-                                                      IObservable<TSource> observable = null;
-                                                      var retryCount = maxRetry;
-                                                      observable = source.Catch<TSource, TException>(x =>
-                                                                                                         {
-                                                                                                             if (retryCount == 0)
-                                                                                                             {
-                                                                                                                 return Observable.Throw<TSource>(x, scheduler);
-                                                                                                             }
+            where TException : Exception =>
+            Observable.Create<TSource>(o =>
+                                           {
+                                               IObservable<TSource> observable = null;
+                                               var retryCount = maxRetry;
+                                               observable = source.Catch<TSource, TException>(x =>
+                                                                                                  {
+                                                                                                      if (retryCount == 0)
+                                                                                                      {
+                                                                                                          return Observable.Throw<TSource>(x, scheduler);
+                                                                                                      }
 
-                                                                                                             retryCount--;
+                                                                                                      retryCount--;
 
-                                                                                                             return after != TimeSpan.Zero
-                                                                                                                        // ReSharper disable once AccessToModifiedClosure
-                                                                                                                        ? Observable.Timer(after, scheduler).Select(_ => observable).Concat()
-                                                                                                                        // ReSharper disable once AccessToModifiedClosure
-                                                                                                                        : observable;
-                                                                                                         });
+                                                                                                      return after != TimeSpan.Zero
+                                                                                                                 // ReSharper disable once AccessToModifiedClosure
+                                                                                                                 ? Observable.Timer(after, scheduler).Select(_ => observable).Concat()
+                                                                                                                 // ReSharper disable once AccessToModifiedClosure
+                                                                                                                 : observable;
+                                                                                                  });
 
-                                                      return observable.Subscribe(o);
-                                                  });
-        }
+                                               return observable.Subscribe(o);
+                                           });
 
         /// <summary>
         ///     Projects each element of an observable sequence into a new form, new source sequence elements cancel old uncompleted tasks returned by the previous call to <paramref name="selector"/> and filters uncompleted transformations.
@@ -708,10 +666,8 @@
         [PublicAPI]
         public static IObservable<TResult> SelectAsyncCancelling<TSource, TResult>(this IObservable<TSource> source,
                                                                                    Func<CancellationToken, TSource, Task<TResult>> selector,
-                                                                                   IScheduler scheduler)
-        {
-            return source.Select(o => Observable.FromAsync(cancellationToken => selector(cancellationToken, o), scheduler)).Switch();
-        }
+                                                                                   IScheduler scheduler) =>
+            source.Select(o => Observable.FromAsync(cancellationToken => selector(cancellationToken, o), scheduler)).Switch();
 
         /// <summary>
         ///     Projects each element of an observable sequence into a new form, new source sequence elements cancel old uncompleted tasks returned by the previous call to <paramref name="selector"/> and filters uncompleted transformations.
@@ -736,10 +692,8 @@
         /// </exception>
         [PublicAPI]
         public static IObservable<TResult> SelectAsyncCancelling<TSource, TResult>(this IObservable<TSource> source,
-                                                                                   Func<CancellationToken, TSource, Task<TResult>> selector)
-        {
-            return source.SelectAsyncCancelling(selector, Scheduler.Default);
-        }
+                                                                                   Func<CancellationToken, TSource, Task<TResult>> selector) =>
+            source.SelectAsyncCancelling(selector, Scheduler.Default);
 
         /// <summary>
         ///     Projects each element of an observable sequence into a new form, <paramref name="selector"/> is executed in parallel.
@@ -765,11 +719,9 @@
         [PublicAPI]
         public static IObservable<TResult> SelectAsyncParallel<TSource, TResult>(this IObservable<TSource> source,
                                                                                  Func<TSource, CancellationToken, Task<TResult>> selector,
-                                                                                 IScheduler scheduler)
-        {
-            return source.Select(x => Observable.FromAsync(ct => selector(x, ct), scheduler))
-                         .Merge();
-        }
+                                                                                 IScheduler scheduler) =>
+            source.Select(x => Observable.FromAsync(ct => selector(x, ct), scheduler))
+                  .Merge();
 
         /// <summary>
         ///     Projects each element of an observable sequence into a new form, <paramref name="selector"/> is executed in parallel.
@@ -791,10 +743,8 @@
         /// </exception>
         [PublicAPI]
         public static IObservable<TResult> SelectAsyncParallel<TSource, TResult>(this IObservable<TSource> source,
-                                                                                 Func<TSource, CancellationToken, Task<TResult>> selector)
-        {
-            return source.SelectAsyncParallel(selector, Scheduler.Default);
-        }
+                                                                                 Func<TSource, CancellationToken, Task<TResult>> selector) =>
+            source.SelectAsyncParallel(selector, Scheduler.Default);
 
         /// <summary>
         ///     Projects each element of an observable sequence into a new form, source sequence elements are queued until the task returned by the previous call to <paramref name="selector"/> is completed.
@@ -820,11 +770,9 @@
         [PublicAPI]
         public static IObservable<TResult> SelectAsyncSequentially<TSource, TResult>(this IObservable<TSource> source,
                                                                                      Func<TSource, CancellationToken, Task<TResult>> selector,
-                                                                                     IScheduler scheduler)
-        {
-            return source.Select(x => Observable.FromAsync(ct => selector(x, ct), scheduler))
-                         .Concat();
-        }
+                                                                                     IScheduler scheduler) =>
+            source.Select(x => Observable.FromAsync(ct => selector(x, ct), scheduler))
+                  .Concat();
 
         /// <summary>
         ///     Projects each element of an observable sequence into a new form, source sequence elements are queued until the task returned by the previous call to <paramref name="selector"/> is completed.
@@ -846,10 +794,8 @@
         /// </exception>
         [PublicAPI]
         public static IObservable<TResult> SelectAsyncSequentially<TSource, TResult>(this IObservable<TSource> source,
-                                                                                     Func<TSource, CancellationToken, Task<TResult>> selector)
-        {
-            return source.SelectAsyncSequentially(selector, Scheduler.Default);
-        }
+                                                                                     Func<TSource, CancellationToken, Task<TResult>> selector) =>
+            source.SelectAsyncSequentially(selector, Scheduler.Default);
 
         /// <summary>
         ///   Projects each element of an observable sequence into a new form, source sequence elements are ignored until
@@ -876,29 +822,27 @@
         /// </exception>
         [PublicAPI]
         public static IObservable<TResult> SelectAsyncSkipping<TSource, TResult>(this IObservable<TSource> source,
-                                                                                 Func<CancellationToken, TSource, Task<TResult>> selector)
-        {
-            return Observable.Create<TResult>(o =>
-                                                  {
-                                                      var cancellationTokenSource = new CancellationTokenSource();
-                                                      var observable = source.Scan(new ValueHolder<Task<TResult>>(),
-                                                                                   (x,
-                                                                                    y) =>
-                                                                                       {
-                                                                                           if (x.Value == null || x.Value.IsCompleted)
-                                                                                           {
-                                                                                               return new ValueHolder<Task<TResult>>(selector(cancellationTokenSource.Token, y));
-                                                                                           }
+                                                                                 Func<CancellationToken, TSource, Task<TResult>> selector) =>
+            Observable.Create<TResult>(o =>
+                                           {
+                                               var cancellationTokenSource = new CancellationTokenSource();
+                                               var observable = source.Scan(new ValueHolder<Task<TResult>>(),
+                                                                            (x,
+                                                                             y) =>
+                                                                                {
+                                                                                    if (x.Value == null || x.Value.IsCompleted)
+                                                                                    {
+                                                                                        return new ValueHolder<Task<TResult>>(selector(cancellationTokenSource.Token, y));
+                                                                                    }
 
-                                                                                           return new ValueHolder<Task<TResult>>(x.Value, true);
-                                                                                       })
-                                                                             .Where(vh => !vh.Ignore)
-                                                                             .Select(vh => vh.Value)
-                                                                             .Concat();
+                                                                                    return new ValueHolder<Task<TResult>>(x.Value, true);
+                                                                                })
+                                                                      .Where(vh => !vh.Ignore)
+                                                                      .Select(vh => vh.Value)
+                                                                      .Concat();
 
-                                                      return new CompositeDisposable(cancellationTokenSource, observable.Subscribe(o));
-                                                  });
-        }
+                                               return new CompositeDisposable(cancellationTokenSource, observable.Subscribe(o));
+                                           });
 
         /// <summary>
         ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
@@ -914,10 +858,7 @@
         ///     An async disposable which sends an cancellation request on disposal and waits for the observable to complete.
         /// </returns>
         [PublicAPI]
-        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source)
-        {
-            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs));
-        }
+        public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source) => InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs));
 
         /// <summary>
         ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
@@ -937,10 +878,8 @@
         /// </returns>
         [PublicAPI]
         public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
-                                                                                 Action<TSource> onNext)
-        {
-            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext));
-        }
+                                                                                 Action<TSource> onNext) =>
+            InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext));
 
         /// <summary>
         ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
@@ -964,10 +903,8 @@
         [PublicAPI]
         public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
                                                                                  Action<TSource> onNext,
-                                                                                 Action<Exception> onError)
-        {
-            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError));
-        }
+                                                                                 Action<Exception> onError) =>
+            InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError));
 
         /// <summary>
         ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
@@ -991,10 +928,8 @@
         [PublicAPI]
         public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
                                                                                  Action<TSource> onNext,
-                                                                                 Action onCompleted)
-        {
-            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, null, onCompleted));
-        }
+                                                                                 Action onCompleted) =>
+            InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, null, onCompleted));
 
         /// <summary>
         ///     Subscribes to an observable which was created with <see cref="CreateWithCancellationSupport{T}"/>.
@@ -1022,10 +957,8 @@
         public static IAsyncDisposable SubscribeWithCancellationSupport<TSource>(this IObservable<TSource> source,
                                                                                  Action<TSource> onNext,
                                                                                  Action<Exception> onError,
-                                                                                 Action onCompleted)
-        {
-            return InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError, onCompleted));
-        }
+                                                                                 Action onCompleted) =>
+            InternalSubscribeWithCancellationSupport(source, (token, tcs) => new ObserverWithCancellationSupport<TSource>(token, tcs, onNext, onError, onCompleted));
 
         /// <summary>
         ///     Returns the elements from the source observable sequence until the <paramref name="predicate"/> is true. 
@@ -1045,29 +978,27 @@
         /// </returns>
         [PublicAPI]
         public static IObservable<TSource> TakeUntil<TSource>(this IObservable<TSource> source,
-                                                              Func<TSource, bool> predicate)
-        {
-            return Observable.Create<TSource>(o =>
-                                                  {
-                                                      var tcs = new TaskCompletionSource<ValueHolder<TSource>>(TaskCreationOptions.RunContinuationsAsynchronously);
-                                                      var observableTask = tcs.Task.ToObservable();
+                                                              Func<TSource, bool> predicate) =>
+            Observable.Create<TSource>(o =>
+                                           {
+                                               var tcs = new TaskCompletionSource<ValueHolder<TSource>>(TaskCreationOptions.RunContinuationsAsynchronously);
+                                               var observableTask = tcs.Task.ToObservable();
 
-                                                      return source.Do(x =>
-                                                                           {
-                                                                               if (predicate(x))
-                                                                               {
-                                                                                   tcs.SetResult(new ValueHolder<TSource>(x));
-                                                                               }
-                                                                           })
-                                                                   .Finally(() => tcs.TrySetResult(new ValueHolder<TSource>(true))) // INFO: [lmbbub1 31.05.16 08:35] Ensure that the task is set to complete even when the predicate is never met.
-                                                                   .Select(x => new ValueHolder<TSource>(x))
-                                                                   .TakeWhile(x => !tcs.Task.IsCompleted)
-                                                                   .Concat(observableTask)
-                                                                   .Where(vh => !vh.Ignore)
-                                                                   .Select(vh => vh.Value)
-                                                                   .Subscribe(o);
-                                                  });
-        }
+                                               return source.Do(x =>
+                                                                    {
+                                                                        if (predicate(x))
+                                                                        {
+                                                                            tcs.SetResult(new ValueHolder<TSource>(x));
+                                                                        }
+                                                                    })
+                                                            .Finally(() => tcs.TrySetResult(new ValueHolder<TSource>(true))) // INFO: [lmbbub1 31.05.16 08:35] Ensure that the task is set to complete even when the predicate is never met.
+                                                            .Select(x => new ValueHolder<TSource>(x))
+                                                            .TakeWhile(x => !tcs.Task.IsCompleted)
+                                                            .Concat(observableTask)
+                                                            .Where(vh => !vh.Ignore)
+                                                            .Select(vh => vh.Value)
+                                                            .Subscribe(o);
+                                           });
 
         /// <summary>
         ///     Creates an observable sequence with the possibility to get a subscription where the observable can be notified to stop producing items.
@@ -1083,23 +1014,21 @@
         ///     An observable sequence with the possibility to get a subscription where the observable can be notified to stop producing items.
         /// </returns>
         [PublicAPI]
-        public static IObservable<TResult> CreateWithCancellationSupport<TResult>(Action<IObserver<TResult>, CancellationToken> subscribe)
-        {
-            return Observable.Create<TResult>(obs =>
-                                                  {
-                                                      var baseObserver = GetBaseObserver(obs);
-                                                      var token = baseObserver.Token;
-                                                      subscribe(obs, token);
-                                                      return Disposable.Create(baseObserver,
-                                                                               x =>
-                                                                                   {
-                                                                                       if (!x.IsCompleted)
-                                                                                       {
-                                                                                           throw new InvalidOperationException("Don't unsubscribe!");
-                                                                                       }
-                                                                                   });
-                                                  });
-        }
+        public static IObservable<TResult> CreateWithCancellationSupport<TResult>(Action<IObserver<TResult>, CancellationToken> subscribe) =>
+            Observable.Create<TResult>(obs =>
+                                           {
+                                               var baseObserver = GetBaseObserver(obs);
+                                               var token = baseObserver.Token;
+                                               subscribe(obs, token);
+                                               return Disposable.Create(baseObserver,
+                                                                        x =>
+                                                                            {
+                                                                                if (!x.IsCompleted)
+                                                                                {
+                                                                                    throw new InvalidOperationException("Don't unsubscribe!");
+                                                                                }
+                                                                            });
+                                           });
 
         #endregion
 
